@@ -107,6 +107,10 @@ jobs:
                 prev_tag=$(git describe --tags --abbrev=0 ${{ steps.set_tag.outputs.tag }}^)
                 echo "::set-output name=prev_tag::${prev_tag}"
 
+            - name: Deconstruct image
+              run: |
+                  split -b 1900M chromeos.img chromeos_image_
+
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
               with:
@@ -124,5 +128,7 @@ jobs:
                     ---
                     
                     Build made in GitHub Actions.
+
+                    Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.img`.
                 files: |
-                    chromeos.img
+                    chromeos_image_*

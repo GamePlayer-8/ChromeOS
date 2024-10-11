@@ -63,6 +63,10 @@ jobs:
                   name: chromeos-${{ env.CODENAME }}
                   path: .
             
+            - name: Deconstruct image
+              run: |
+                  split -b 1900M chromeos.img chromeos_image_
+
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
               with:
@@ -71,6 +75,9 @@ jobs:
                   prerelease: true
                   strategy: replace
                   title: "Automatic build - ChromeOS-${{ env.CODENAME }}"
-                  body: "Automatic build ${{ env.CODENAME }}}"
+                  body: |
+                      Automatic build ${{ env.CODENAME }}}
+
+                      Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.img`.
                   files: |
-                      chromeos.img
+                      chromeos_image_*
