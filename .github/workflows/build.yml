@@ -3,15 +3,24 @@ name: Build ChromeOS
 on:
     push:
         branches: [main]
-    workflow_call:
+
+    workflow_dispatch:
         inputs:
             codename:
+                type: choice
+                description: |
+                    Codename for ChromeOS build. Check README for information on choosing a codename.
                 required: true
+                options: [voxel, gumboz, jinlon, shyvana, leona, samus]
                 default: voxel
-                type: string
+    workflow_call:
+        inputs:
             target:
                 required: true
                 type: string
+
+env:
+    CODENAME: ${{ inputs.codename || 'voxel' }}
 
 jobs:
     build:
@@ -34,12 +43,12 @@ jobs:
           - name: Build ChromeOS
             run: |
               chmod +x build.sh
-              ./build.sh ${{ inputs.codename }}
+              ./build.sh ${{ env.CODENAME }}
           
           - name: Upload image
             uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
             with:
-              name: chromeos-${{ inputs.codename }}
+              name: chromeos-${{ env.CODENAME }}
               path: chromeos/chromeos.img
     
     publish:
@@ -51,7 +60,7 @@ jobs:
             - name: Download Image
               uses: actions/download-artifact@v4
               with:
-                  name: chromeos-${{ inputs.codename }}
+                  name: chromeos-${{ env.CODENAME }}
                   path: .
             
             - name: Publish release
@@ -61,7 +70,7 @@ jobs:
                   tag: nightly
                   prerelease: true
                   strategy: replace
-                  title: "Automatic build - ChromeOS-${{ inputs.codename }}"
-                  body: "Automatic build ${{ inputs.codename }}"
+                  title: "Automatic build - ChromeOS-${{ env.CODENAME }}"
+                  body: "Automatic build ${{ env.CODENAME }}}"
                   files: |
                       chromeos.img

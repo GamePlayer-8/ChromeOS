@@ -4,12 +4,29 @@ on:
     push:
         tags:
           - 'v*'
-    workflow_call:
+    workflow_dispatch:
         inputs:
             codename:
+                type: choice
+                description: |
+                    Codename for ChromeOS build. Check README for information on choosing a codename.
                 required: true
                 default: voxel
+                options: [voxel, gumboz, jinlon, shyvana, leona, samus]
+            tag:
                 type: string
+                description: |
+                    Version tag
+                required: true
+                default: 'v1.0.0'
+            prerelease:
+                type: boolean
+                description: |
+                    Is it a prerelease?
+                required: true
+                default: true
+    workflow_call:
+        inputs:
             target:
                 required: true
                 type: string
@@ -23,6 +40,9 @@ on:
                 required: false
                 default: false
                 type: boolean
+
+env:
+    CODENAME: ${{ inputs.codename || 'voxel' }}
 
 jobs:
     build:
@@ -45,12 +65,12 @@ jobs:
           - name: Build ChromeOS
             run: |
               chmod +x build.sh
-              ./build.sh ${{ inputs.codename }}
+              ./build.sh ${{ env.CODENAME }}
           
           - name: Upload image
             uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
             with:
-              name: chromeos-${{ inputs.codename }}
+              name: chromeos-${{ env.CODENAME }}
               path: chromeos/chromeos.img
     
     publish:
@@ -68,7 +88,7 @@ jobs:
             - name: Download Image
               uses: actions/download-artifact@v4
               with:
-                name: chromeos-${{ inputs.codename }}
+                name: chromeos-${{ env.CODENAME }}
                 path: .
 
             - name: Set tag from input or trigger
@@ -95,7 +115,7 @@ jobs:
                 prerelease: ${{ inputs.prerelease }}
                 draft: false
                 strategy: replace
-                title: Release ${{ steps.set_tag.outputs.tag }}
+                title: Release ${{ steps.set_tag.outputs.tag }} ChromeOS-${{ env.CODENAME }}
                 body: |
                     ## Changelog
 
@@ -105,5 +125,4 @@ jobs:
                     
                     Build made in GitHub Actions.
                 files: |
-                    google-messages.flatpak
-                    GoogleMessages.tar.xz
+                    chromeos.img
