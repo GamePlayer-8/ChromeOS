@@ -11,12 +11,14 @@ on:
                 description: |
                     Codename for ChromeOS build. Check README for information on choosing a codename.
                 required: true
+                default: voxel
                 options: [voxel, gumboz, jinlon, shyvana, leona, samus]
             tag:
                 type: string
                 description: |
                     Version tag
                 required: true
+                default: 'v1.0.0'
     workflow_call:
         inputs:
             target:
