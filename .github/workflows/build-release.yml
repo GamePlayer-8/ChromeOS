@@ -4,23 +4,12 @@ on:
     push:
         tags:
           - 'v*'
-    workflow_dispatch:
-        inputs:
-            codename:
-                type: choice
-                description: |
-                    Codename for ChromeOS build. Check README for information on choosing a codename.
-                required: true
-                default: voxel
-                options: [voxel, gumboz, jinlon, shyvana, leona, samus]
-            tag:
-                type: string
-                description: |
-                    Version tag
-                required: true
-                default: 'v1.0.0'
     workflow_call:
         inputs:
+            codename:
+                required: true
+                default: voxel
+                type: string
             target:
                 required: true
                 type: string

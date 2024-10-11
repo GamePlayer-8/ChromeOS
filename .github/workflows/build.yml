@@ -3,16 +3,6 @@ name: Build ChromeOS
 on:
     push:
         branches: [main]
-
-    workflow_dispatch:
-        inputs:
-            codename:
-                type: choice
-                description: |
-                    Codename for ChromeOS build. Check README for information on choosing a codename.
-                required: true
-                options: [voxel, gumboz, jinlon, shyvana, leona, samus]
-                default: voxel
     workflow_call:
         inputs:
             codename:
