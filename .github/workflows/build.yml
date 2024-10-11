@@ -63,9 +63,20 @@ jobs:
                   name: chromeos-${{ env.CODENAME }}
                   path: .
             
+            - name: Install qemu-img
+              run: |
+                  apt update
+                  apt install -y --no-install-recommends qemu-utils
+                  apt clean
+
+            - name: QEMU Convert image
+              run: |
+                  qemu-img convert -f raw -O qcow2 chrome.img chromeos.qcow2
+                  rm -f chromeos.img
+
             - name: Deconstruct image
               run: |
-                  split -b 1900M chromeos.img chromeos_image_
+                  split -b 1900M chromeos.qcow2 chromeos_image_
 
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
@@ -78,6 +89,6 @@ jobs:
                   body: |
                       Automatic build ${{ env.CODENAME }}}
 
-                      Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.img`.
+                      Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.qcow2`.
                   files: |
                       chromeos_image_*
