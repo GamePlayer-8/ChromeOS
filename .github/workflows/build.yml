@@ -65,9 +65,9 @@ jobs:
             
             - name: Install qemu-img
               run: |
-                  apt update
-                  apt install -y --no-install-recommends qemu-utils
-                  apt clean
+                  sudo apt update
+                  sudo apt install -y --no-install-recommends qemu-utils
+                  sudo apt clean
 
             - name: QEMU Convert image
               run: |
