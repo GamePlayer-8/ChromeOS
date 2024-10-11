@@ -1,6 +1,9 @@
 name: Build ChromeOS
 
 on:
+    push:
+        branches: [main]
+
     workflow_dispatch:
         inputs:
             codename:
@@ -9,6 +12,15 @@ on:
                     Codename for ChromeOS build. Check README for information on choosing a codename.
                 required: true
                 options: [voxel, gumboz, jinlon, shyvana, leona, samus]
+    workflow_call:
+        inputs:
+            codename:
+                required: true
+                default: voxel
+                type: string
+            target:
+                required: true
+                type: string
 
 jobs:
     build:
@@ -18,7 +30,7 @@ jobs:
             contents: read
         steps:
           - name: Checkout code
-            uses: actions/checkout@v4
+            uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
           - name: Delete workflow runs
             uses: Mattraks/delete-workflow-runs@v2
@@ -34,7 +46,31 @@ jobs:
               ./build.sh ${{ inputs.codename }}
           
           - name: Upload image
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
             with:
               name: chromeos-${{ inputs.codename }}
               path: chromeos/chromeos.img
+    
+    publish:
+        runs-on: ubuntu-latest
+        permissions: write-all
+        needs: [build]
+
+        steps:
+            - name: Download Image
+              uses: actions/download-artifact@v4
+              with:
+                  name: chromeos-${{ inputs.codename }}
+                  path: .
+            
+            - name: Publish release
+              uses: notpeelz/action-gh-create-release@v5.0.1
+              with:
+                  target: ${{ inputs.target }}
+                  tag: nightly
+                  prerelease: true
+                  strategy: replace
+                  title: "Automatic build - ChromeOS-${{ inputs.codename }}"
+                  body: "Automatic build ${{ inputs.codename }}"
+                  files: |
+                      chromeos.img
