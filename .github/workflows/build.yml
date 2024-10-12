@@ -71,7 +71,7 @@ jobs:
 
             - name: QEMU Convert image
               run: |
-                  qemu-img convert -f raw -O qcow2 chrome.img chromeos.qcow2
+                  qemu-img convert -f raw -O qcow2 chromeos.img chromeos.qcow2
                   rm -f chromeos.img
 
             - name: Deconstruct image
