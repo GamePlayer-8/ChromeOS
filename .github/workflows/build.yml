@@ -88,7 +88,5 @@ jobs:
                   title: "Automatic build - ChromeOS-${{ env.CODENAME }}"
                   body: |
                       Automatic build ${{ env.CODENAME }}}
-
-                      Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.qcow2`.
                   files: |
                       chromeos.img.zpaq

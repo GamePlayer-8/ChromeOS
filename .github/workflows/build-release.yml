@@ -107,17 +107,16 @@ jobs:
                 prev_tag=$(git describe --abbrev=0 --tags --exclude="$(git describe --abbrev=0 --tags ${{ steps.set_tag.outputs.tag }})")
                 echo "::set-output name=prev_tag::${prev_tag}"
 
-            - name: Install qemu-img
+            - name: Install zpaq
               run: |
                   sudo apt update
-                  sudo apt install -y --no-install-recommends qemu-utils zstd
+                  sudo apt install -y --no-install-recommends zpaq
                   sudo apt clean
 
-            - name: QEMU Convert image
+            - name: Compress image
               run: |
-                  qemu-img convert -f raw -O qcow2 chromeos.img chromeos.qcow2
+                  zpaq a chromeos.img.zpaq chromeos.img -m5
                   rm -f chromeos.img
-                  zstd -T$(nproc --all) -22 --ultra chromeos.qcow2
 
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
@@ -136,7 +135,5 @@ jobs:
                     ---
                     
                     Build made in GitHub Actions.
-
-                    Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.img`.
                 files: |
-                    chromeos.qcow2.zst
+                    chromeos.img.zpaq
