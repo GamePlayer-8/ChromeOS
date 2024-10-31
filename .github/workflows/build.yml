@@ -63,21 +63,20 @@ jobs:
                   name: chromeos-${{ env.CODENAME }}
                   path: .
             
-            - name: Install qemu-img
+            - name: Install zstd
               run: |
                   sudo apt update
-                  sudo apt install -y --no-install-recommends qemu-utils zstd
+                  sudo apt install -y --no-install-recommends zstd
                   sudo apt clean
 
-            - name: QEMU Convert image
+            - name: Compress image
               run: |
-                  qemu-img convert -f raw -O qcow2 chromeos.img chromeos.qcow2
+                  zstd -T$(nproc --all) -22 --ultra chromeos.img
                   rm -f chromeos.img
-                  zstd -T$(nproc --all) -22 --ultra chromeos.qcow2
 
             - name: Print final size
               run: |
-                  ls -lh chromeos.qcow2.zst
+                  ls -lh chromeos.img.zst
 
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
@@ -92,4 +91,4 @@ jobs:
 
                       Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.qcow2`.
                   files: |
-                      chromeos.qcow2.zst
+                      chromeos.img.zst
