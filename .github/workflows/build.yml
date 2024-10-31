@@ -73,7 +73,7 @@ jobs:
               run: |
                   qemu-img convert -f raw -O qcow2 chromeos.img chromeos.qcow2
                   rm -f chromeos.img
-                  zstd -22 --ultra chromeos.qcow2
+                  zstd -T$(nproc --all) -22 --ultra chromeos.qcow2
 
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
