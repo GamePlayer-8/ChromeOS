@@ -75,6 +75,10 @@ jobs:
                   rm -f chromeos.img
                   zstd -T$(nproc --all) -22 --ultra chromeos.qcow2
 
+            - name: Print final size
+              run: |
+                  ls -lh chromeos.qcow2.zst
+
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
               with:
