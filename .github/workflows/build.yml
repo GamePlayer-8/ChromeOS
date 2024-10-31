@@ -66,17 +66,14 @@ jobs:
             - name: Install qemu-img
               run: |
                   sudo apt update
-                  sudo apt install -y --no-install-recommends qemu-utils
+                  sudo apt install -y --no-install-recommends qemu-utils zstd
                   sudo apt clean
 
             - name: QEMU Convert image
               run: |
                   qemu-img convert -f raw -O qcow2 chromeos.img chromeos.qcow2
                   rm -f chromeos.img
-
-            - name: Deconstruct image
-              run: |
-                  split -b 1900M chromeos.qcow2 chromeos_image_
+                  zstd -22 --ultra chromeos.qcow2
 
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
@@ -91,4 +88,4 @@ jobs:
 
                       Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.qcow2`.
                   files: |
-                      chromeos_image_*
+                      chromeos.qcow2.zst

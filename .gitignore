@@ -3,3 +3,5 @@ chromeos/
 *.img
 *.7z
 *.zip
+*.zst
+*.qcow2
