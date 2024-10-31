@@ -63,20 +63,20 @@ jobs:
                   name: chromeos-${{ env.CODENAME }}
                   path: .
             
-            - name: Install zstd
+            - name: Install zpaq
               run: |
                   sudo apt update
-                  sudo apt install -y --no-install-recommends zstd
+                  sudo apt install -y --no-install-recommends zpaq
                   sudo apt clean
 
             - name: Compress image
               run: |
-                  zstd -T$(nproc --all) -22 --ultra chromeos.img
+                  zpaq a -m5 chromeos.img.zpaq chromeos.img
                   rm -f chromeos.img
 
             - name: Print final size
               run: |
-                  ls -lh chromeos.img.zst
+                  ls -lh chromeos.img.zpaq
 
             - name: Publish release
               uses: notpeelz/action-gh-create-release@v5.0.1
@@ -91,4 +91,4 @@ jobs:
 
                       Download all `chromeos_image_*` files and then run `cat chromeos_image_* >> chromeos.qcow2`.
                   files: |
-                      chromeos.img.zst
+                      chromeos.img.zpaq
