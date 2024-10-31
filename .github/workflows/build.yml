@@ -12,7 +12,7 @@ on:
                     Codename for ChromeOS build. Check README for information on choosing a codename.
                 required: true
                 options: [voxel, gumboz, jinlon, shyvana, leona, samus]
-                default: voxel
+                default: samus
     workflow_call:
         inputs:
             target:
@@ -20,7 +20,7 @@ on:
                 type: string
 
 env:
-    CODENAME: ${{ inputs.codename || 'voxel' }}
+    CODENAME: ${{ inputs.codename || 'samus' }}
 
 jobs:
     build:

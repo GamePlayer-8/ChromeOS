@@ -11,7 +11,7 @@ on:
                 description: |
                     Codename for ChromeOS build. Check README for information on choosing a codename.
                 required: true
-                default: voxel
+                default: samus
                 options: [voxel, gumboz, jinlon, shyvana, leona, samus]
             tag:
                 type: string
@@ -42,7 +42,7 @@ on:
                 type: boolean
 
 env:
-    CODENAME: ${{ inputs.codename || 'voxel' }}
+    CODENAME: ${{ inputs.codename || 'samus' }}
 
 jobs:
     build:
