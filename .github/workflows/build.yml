@@ -71,7 +71,7 @@ jobs:
 
             - name: Compress image
               run: |
-                  zpaq a -m5 chromeos.img.zpaq chromeos.img
+                  zpaq a chromeos.img.zpaq chromeos.img -m5
                   rm -f chromeos.img
 
             - name: Print final size
